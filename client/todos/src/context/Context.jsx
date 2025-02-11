@@ -9,6 +9,7 @@ import {
 import TodoContext from "./TodoContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../config/baseUrl";
 
 const AuthContext = createContext();
 
@@ -65,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/user/own", {
+        const res = await axios.get(`${BASE_URL}/user/own`, {
           withCredentials: true,
         });
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
@@ -78,7 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (cred) => {
     try {
-      const res = await axios.post("http://localhost:8080/user/signup", cred, {
+      const res = await axios.post(`${BASE_URL}/user/signup`, cred, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -92,13 +93,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       dispatch({ type: "SET_LOADING" });
-      const res = await axios.post(
-        "http://localhost:8080/user/login",
-        credentials,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(`${BASE_URL}/user/login`, credentials, {
+        withCredentials: true,
+      });
 
       if (res.status === 200) {
         const token = res?.data?.token;
@@ -123,7 +120,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async (req, res) => {
     try {
       await axios.post(
-        "http://localhost:8080/user/logout",
+        `${BASE_URL}/user/logout`,
         {},
         {
           withCredentials: true,

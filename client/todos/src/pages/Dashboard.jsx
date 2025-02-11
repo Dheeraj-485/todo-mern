@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import AuthContext from "../context/Context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../config/baseUrl";
 
 const Dashboard = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      await axios.get("http://localhost:8080/user/own", {
+      await axios.get(`${BASE_URL}/user/own`, {
         withCredentials: true,
       });
       //   if (!isAuthenticated) {
