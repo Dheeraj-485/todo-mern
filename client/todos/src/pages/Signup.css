@@ -1,0 +1,122 @@
+/* .container {
+    display: flex;
+    justify-content: center;
+    background-color: lightblue;
+    align-items: center;
+    height: 100vh;
+
+}
+
+.formClass{
+    
+    display: flex;
+    flex-direction: column;
+    border:2px solid black;
+    border-radius: 10%;
+    justify-content: center;
+    height:50%;
+    width: 30%;
+    align-items: center;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.7);
+    background-color: red;
+}
+
+.form{
+    
+    height: 10px;
+    background-color: blue;
+    
+
+
+}
+.dataClass{
+    display: flex;
+    flex-direction: column;
+    background-color: bisque;
+} */
+
+/* Global styles */
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+} */
+
+/* Main container */
+/* .signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  background: linear-gradient(135deg, #667eea, #764ba2);
+} */
+
+/* Form box */
+/* .formClass {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  text-align: center;
+} */
+
+/* Form title */
+/* .formClass h2 {
+  margin-bottom: 20px;
+  color: #333;
+} */
+
+/* Form input fields */
+/* .dataClass {
+  margin-bottom: 15px;
+  text-align: left;
+} */
+
+/* .dataClass label {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+  color: #444;
+} */
+
+/* .dataClass input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+} */
+
+/* Input focus effect */
+/* .dataClass input:focus {
+  border-color: #764ba2;
+} */
+
+/* Signup Button */
+/* button {
+  width: 100%;
+  padding: 12px;
+  background: #764ba2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+} */
+
+/* button:hover {
+  background: #5a3d8d;
+} */
+
+/* Responsive for small screens */
+/* @media (max-width: 400px) {
+  .formClass {
+    width: 90%;
+  }
+} */

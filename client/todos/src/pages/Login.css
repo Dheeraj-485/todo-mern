@@ -1,0 +1,46 @@
+.container-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(180deg, #2695e4, #627885);
+  /* background-color: aqua; */
+}
+
+.formClass-login {
+  /* display: flex;
+  justify-content: center; */
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  align-items: center;
+  /* text-align: center; */
+  width: 350px;
+  /* border: 2px solid black; */
+  /* height: 400px; */
+}
+.formClass-login h2 {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-weight: bolder;
+  margin-bottom: 1rem;
+}
+.dataClass-login {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.dataClass-login label {
+  font-size: 1.2rem;
+  font-weight: semibold;
+}
+.dataClass-login input {
+  font-size: 1.3rem;
+  font-weight: semibold;
+  /* height: 100%; */
+  width: 100%;
+  padding: 0.3rem;
+  outline: none;
+}
