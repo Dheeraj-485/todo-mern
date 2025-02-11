@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/Context";
 import { useTheme } from "./ThemeContext";
 import axios from "axios";
-import { BASE_URL } from "../config/baseUrl";
 
 const Navbar = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -12,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = async (e) => {
     try {
-      const res = await axios.get(`${BASE_URL}/user/logout`, {
+      const res = await axios.get("http://localhost:8080/user/logout", {
         withCredentials: true,
       });
       // navigate("/login");
