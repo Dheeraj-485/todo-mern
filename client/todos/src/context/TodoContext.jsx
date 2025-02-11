@@ -3,7 +3,6 @@ import AuthContext from "./Context";
 
 import { createContext, useReducer, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../config/baseUrl";
 const TodoContext = createContext();
 
 const initialState = {
@@ -68,7 +67,7 @@ export const TodoProvider = ({ children }) => {
       dispatch({ type: "SET_LOADING" });
 
       try {
-        const res = await axios.get(`${BASE_URL}/todo/alltodos`, {
+        const res = await axios.get("http://localhost:8080/todo/alltodos", {
           withCredentials: true,
         });
         console.log("Todo res", res.data.items);
@@ -83,7 +82,7 @@ export const TodoProvider = ({ children }) => {
 
   const addTodo = async (cred) => {
     try {
-      const res = await axios.post(`${BASE_URL}/todo/add`, cred, {
+      const res = await axios.post("http://localhost:8080/todo/add", cred, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -108,7 +107,7 @@ export const TodoProvider = ({ children }) => {
 
   const delTodo = async (id) => {
     try {
-      const res = await axios.delete(`${BASE_URL}/todo/${id}`, {
+      const res = await axios.delete(`http://localhost:8080/todo/${id}`, {
         withCredentials: true,
       });
       if (res.status === 200) {
@@ -126,7 +125,7 @@ export const TodoProvider = ({ children }) => {
   const updateTodo = async (id, updatedData) => {
     try {
       const res = await axios.put(
-        `${BASE_URL}/todo/update/${id}`,
+        `http://localhost:8080/todo/update/${id}`,
         updatedData,
         {
           withCredentials: true,
@@ -145,7 +144,7 @@ export const TodoProvider = ({ children }) => {
   const toggleTodo = async (id, completed) => {
     try {
       const res = await axios.put(
-        `${BASE_URL}/todo/toggle/${id}`,
+        `http://localhost:8080/todo/toggle/${id}`,
         {
           completed: !completed,
         },
@@ -153,7 +152,8 @@ export const TodoProvider = ({ children }) => {
       );
 
       console.log("Toggle complete response", res.data);
-
+      // Update the todo item locally with the updated completion status
+      // updateTodo(id, { completed: !completed });
       dispatch({ type: "TOGGLE_TODO", payload: { id, ...completed } });
     } catch (error) {
       console.error("Error toggling todo:", error.message);
