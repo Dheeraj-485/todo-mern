@@ -5,6 +5,7 @@ const UserRoutes = require("./routes/User");
 const todoRoutes = require("./routes/Todos");
 const cookieParser = require("cookie-parser");
 const app = express();
+require("dotenv").config();
 
 app.use(
   cors({
@@ -18,7 +19,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/todoMern")
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("DB connected");
   })
