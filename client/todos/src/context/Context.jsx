@@ -8,6 +8,7 @@ import {
 } from "react";
 import TodoContext from "./TodoContext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -19,6 +20,13 @@ const initialState = {
 
 const authReducer = (state, action) => {
   switch (action.type) {
+    case "SIGNUP_SUCCESS":
+      return {
+        ...state,
+        user: action.payload,
+        isAuthenticated: true,
+        loading: false,
+      };
     case "LOGIN_SUCCESS":
       return {
         ...state,
@@ -46,7 +54,6 @@ const authReducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
   );
@@ -67,8 +74,20 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkAuth();
-  }, [initialState.user, initialState.isAuthenticated]);
+  }, []);
 
+  const signup = async (cred) => {
+    try {
+      const res = await axios.post("http://localhost:8080/user/signup", cred, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      dispatch({ type: "SIGNUP_SUCCESS", payload: res.data });
+    } catch (error) {
+      toast.error("Error in signup", error.message);
+    }
+  };
   //check login
   const login = async (credentials) => {
     try {
@@ -110,12 +129,13 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         }
       );
+      localStorage.removeItem("token");
       dispatch({ type: "LOGOUT" });
     } catch (error) {}
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

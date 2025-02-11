@@ -2,16 +2,13 @@ const Todo = require("../model/Todos");
 
 exports.createTodo = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title } = req.body;
     // const { id } = req.user;
-    if (!title || !description) {
-      return res
-        .status(403)
-        .json({ message: "title and description is required" });
+    if (!title) {
+      return res.status(403).json({ message: "title" });
     }
     const newTodo = new Todo({
       title,
-      description,
       userId: req.user.id,
     });
     // console.log("userId", userId);

@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useTheme } from "../components/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/Context";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const { isDarkMode } = useTheme();
+  const { signup } = useContext(AuthContext);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -15,16 +18,13 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8080/user/signup",
-        data
-      );
+      await signup(data);
 
-      console.log("Response:", response.data);
+      // console.log("Response:", response.data);
 
-      alert("Signup Successful!");
+      toast.success("Signup Successful!");
 
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       if (error.response) {
         alert("Error: " + error.response.data.message);
