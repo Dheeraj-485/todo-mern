@@ -9,10 +9,11 @@ require("dotenv").config();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow frontend origin
+    origin: ["http://localhost:5173", "https://todo-mern-lilac.vercel.app"], // Allow both local and deployed frontend
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
