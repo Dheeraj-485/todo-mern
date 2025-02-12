@@ -17,7 +17,6 @@ const App = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
-      <Navbar />
       <Routes>
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />

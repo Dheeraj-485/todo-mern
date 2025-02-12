@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { TodoProvider } from "./context/TodoContext.jsx";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "./components/ThemeContext.jsx";
+import Navbar from "./components/Navbar.jsx";
 export const ThemeContext = createContext();
 
 createRoot(document.getElementById("root")).render(
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")).render(
       <TodoProvider>
         <BrowserRouter>
           <Toaster />
+          <Navbar />
           <App />
         </BrowserRouter>
       </TodoProvider>

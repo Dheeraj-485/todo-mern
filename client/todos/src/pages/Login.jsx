@@ -16,8 +16,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(input);
-      navigate("/");
+      const res = await login(input);
+      if (res?.user) {
+        navigate("/");
+      } else {
+        throw new Error("Invalid credentials");
+      }
     } catch (error) {
       console.log(error);
 

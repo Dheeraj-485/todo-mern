@@ -9,6 +9,7 @@ import {
 import TodoContext from "./TodoContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../config/baseUrl";
 
 const AuthContext = createContext();
 
@@ -49,6 +50,8 @@ const authReducer = (state, action) => {
 
         loading: true,
       };
+    default:
+      return state;
   }
 };
 
@@ -66,20 +69,22 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/user/own", {
+        const res = await axios.get(`${BASE_URL}/user/own`, {
           withCredentials: true,
         });
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+        if (res?.data) {
+          dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+        }
       } catch (error) {
         dispatch({ type: "LOGOUT" });
       }
     };
     checkAuth();
-  }, [initialState.user, initialState.isAuthenticated]);
+  }, []);
 
   const signup = async (cred) => {
     try {
-      const res = await axios.post("http://localhost:8080/user/signup", cred, {
+      const res = await axios.post(`${BASE_URL}/user/signup`, cred, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,50 +94,52 @@ export const AuthProvider = ({ children }) => {
       toast.error("Error in signup", error.message);
     }
   };
-  //check login
+
   const login = async (credentials) => {
     try {
       dispatch({ type: "SET_LOADING" });
-      const res = await axios.post(
-        "http://localhost:8080/user/login",
-        credentials,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(`${BASE_URL}/user/login`, credentials, {
+        withCredentials: true,
+      });
 
       if (res.status === 200) {
         const token = res?.data?.token;
         if (token) {
           localStorage.setItem("token", token);
-        } else {
-          console.log("Token not in login");
         }
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: res.data,
+          isAuthenticated: true,
+        });
+        return res.data;
+      } else {
+        throw new Error("Invalid credentials");
       }
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-
-      // fetchTodos();
-
-      console.log("Login details:", res.data);
     } catch (error) {
-      console.log("Error", error);
-
-      alert(error.response?.data?.message);
+      dispatch({ type: "LOGOUT" });
+      throw error;
     }
   };
 
   const logout = async (req, res) => {
     try {
-      await axios.post(
-        "http://localhost:8080/user/logout",
-        {},
+      const res = await axios.get(
+        `${BASE_URL}/user/logout`,
+
         {
           withCredentials: true,
         }
       );
-      localStorage.removeItem("token");
-      dispatch({ type: "LOGOUT" });
-    } catch (error) {}
+      if (res.status === 200) {
+        dispatch({ type: "LOGOUT" });
+      }
+
+      // localStorage.removeItem("token");
+      toast.success("Logout success");
+    } catch (error) {
+      toast.error("Error logging out");
+    }
   };
 
   return (
