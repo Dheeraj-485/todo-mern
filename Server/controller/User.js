@@ -49,8 +49,12 @@ exports.loginUser = async (req, res) => {
     user.token = token;
     user.password = undefined;
     const options = {
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
+      // expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      // httpOnly: true,
+      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+      httpOnly: true, // Prevents JavaScript access
+      secure: true, // Ensures cookie is sent over HTTPS
+      sameSite: "None", // Allows cross-site cookies
     };
 
     res
