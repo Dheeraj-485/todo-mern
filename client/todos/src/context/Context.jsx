@@ -120,6 +120,12 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Invalid credentials");
       }
     } catch (error) {
+      if (error.response && error.response.status === 500) {
+        toast.error("Internal Server Error. Please try again later.");
+      } else {
+        toast.error(error.message);
+      }
+
       dispatch({ type: "LOGOUT" });
       throw error;
     }
