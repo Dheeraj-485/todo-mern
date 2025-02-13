@@ -17,9 +17,12 @@ const TodoForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!title.trim()) return;
+
     if (editTodo) {
       await updateTodo(editTodo._id, { title });
+      setEditTodo(null);
     } else {
       const newTodo = {
         //   id: 1,

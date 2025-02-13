@@ -13,7 +13,7 @@ const Todos = () => {
 
   const handleComplete = async (id, completed) => {
     try {
-      toggleTodo(id, { completed: !completed });
+      await toggleTodo(id, completed);
     } catch (error) {
       console.error("Error toggling todo:", error.message);
       toast.error("error toggling todo", error.message);

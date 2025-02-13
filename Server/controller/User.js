@@ -11,7 +11,7 @@ exports.createUser = async (req, res) => {
 
     const findEmail = await User.findOne({ email });
     if (findEmail) {
-      return res.status(401).json({ message: "User already exists " });
+      return res.status(203).json({ message: "User already exists " });
     }
     const hash = await bcrypt.hash(password, 10);
 

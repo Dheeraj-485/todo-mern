@@ -94,6 +94,7 @@ export const AuthProvider = ({ children }) => {
         },
       });
       dispatch({ type: "SIGNUP_SUCCESS", payload: res.data });
+      return res;
     } catch (error) {
       toast.error("Error in signup", error.message);
     }

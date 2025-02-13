@@ -19,16 +19,17 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup(data);
+      const res = await signup(data);
 
       // console.log("Response:", response.data);
 
-      toast.success("Signup Successful!");
-
-      navigate("/login");
+      if (res && res.data) {
+        toast.success(res?.data?.message);
+        navigate("/login");
+      }
     } catch (error) {
       if (error.response) {
-        alert("Error: " + error.response.data.message);
+        toast.error("Error: " + error.res?.data.message);
         console.error("Signup Error:", error.response.data.message);
       } else {
         console.error("Unexpected Error:", error);

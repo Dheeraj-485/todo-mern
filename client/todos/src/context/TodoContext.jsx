@@ -42,7 +42,7 @@ const todoReducer = (state, action) => {
       return {
         ...state,
         todos: state.todos.map((todo) =>
-          todo._id === action.payload.id ? action.payload : todo
+          todo._id === action.payload._id ? action.payload : todo
         ),
       };
     case "TOGGLE_TODO":
@@ -121,7 +121,10 @@ export const TodoProvider = ({ children }) => {
           headers: getAuthHeaders(),
         }
       );
-      dispatch({ type: "UPDATE_TODO", payload: res.data.todo });
+      dispatch({
+        type: "UPDATE_TODO",
+        payload: { ...res.data.todo, id: res.data.todo._id },
+      });
       toast.success("Todo updated successfully");
       setEditTodo(null);
     } catch (error) {
@@ -131,12 +134,15 @@ export const TodoProvider = ({ children }) => {
 
   const toggleTodo = async (id, completed) => {
     try {
-      await axios.put(
+      const res = await axios.put(
         `${BASE_URL}/todo/toggle/${id}`,
         { completed: !completed },
         { headers: getAuthHeaders() }
       );
-      dispatch({ type: "TOGGLE_TODO", payload: { id, completed: !completed } });
+      dispatch({
+        type: "TOGGLE_TODO",
+        payload: { id, completed: res.data.todo.completed },
+      });
     } catch (error) {
       toast.error("Error toggling todo");
     }
