@@ -1,10 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useTheme } from "./ThemeContext";
+import TodoContext from "../context/TodoContext";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const { cleartodo } = useContext(TodoContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,6 +16,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    cleartodo();
     setIsLoggedIn(false);
 
     navigate("/login");

@@ -54,6 +54,14 @@ const todoReducer = (state, action) => {
             : todo
         ),
       };
+    case "CLEAR_TODOS":
+      return {
+        ...state,
+        todos: [],
+        loading: false,
+        error: null,
+      };
+
     case "SET_ERROR":
       return { ...state, error: action.payload, loading: false };
     default:
@@ -86,6 +94,16 @@ export const TodoProvider = ({ children }) => {
     };
     fetchTodos();
   }, [isAuthenticated]);
+  const cleartodo = () => {
+    dispatch({ type: "CLEAR_TODOS" });
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch({ type: "CLEAR_TODOS" }); // Clear todos on logout
+      return;
+    }
+  }, []);
 
   const addTodo = async (cred) => {
     try {
@@ -95,6 +113,11 @@ export const TodoProvider = ({ children }) => {
       dispatch({ type: "ADD_TODO", payload: res?.data?.doc });
       toast.success("Todo added successfully");
     } catch (error) {
+      if (error.response && error.response.status === 500) {
+        toast.error("Internal Server Error. Please try again later.");
+      } else {
+        toast.error(error.message || "Failed to add todo.");
+      }
       dispatch({ type: "SET_ERROR", payload: error.message });
     }
   };
@@ -160,6 +183,7 @@ export const TodoProvider = ({ children }) => {
         editTodo,
         setEditTodo,
         toggleTodo,
+        cleartodo,
       }}
     >
       {children}

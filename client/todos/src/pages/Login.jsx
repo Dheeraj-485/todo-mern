@@ -18,8 +18,9 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await login(input);
-      if (res?.user) {
+      if (res?.data) {
         navigate("/");
+        toast.success(res.data.message);
       } else {
         throw new Error("Invalid credentials");
       }

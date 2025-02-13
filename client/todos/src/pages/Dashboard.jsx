@@ -13,9 +13,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const fetchProfile = async () => {
       await axios.get(`${BASE_URL}/user/own`, {
-        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       });
       //   if (!isAuthenticated) {
       //     navigate("/login");
@@ -34,9 +35,7 @@ const Dashboard = () => {
       <div className="container mx-auto p-6 flex justify-center items-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 bg-blue-500 text-white rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold mb-4">
-              Welcome, {user.user.email}
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">Welcome, {user.email}</h1>
           </div>
         </div>
       </div>

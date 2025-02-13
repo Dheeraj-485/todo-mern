@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }) => {
           payload: res.data,
           isAuthenticated: true,
         });
-        return res.data;
+        return res;
       } else {
         throw new Error("Invalid credentials");
       }

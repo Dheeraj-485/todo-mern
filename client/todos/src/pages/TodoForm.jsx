@@ -31,6 +31,7 @@ const TodoForm = () => {
       };
 
       await addTodo(newTodo);
+
       if (!isAuthenticated) {
         toast.error("Please login first:");
       }
