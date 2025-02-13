@@ -25,25 +25,19 @@ const todoReducer = (state, action) => {
     case "ADD_TODO":
       return {
         ...state,
-        // todos: todos.push[action.payload],
         loading: false,
         error: null,
         todos: [...state.todos, action.payload],
       };
     case "REMOVE_TODO":
-      console.log("action", action.payload);
-
       return {
         ...state,
         todos: state.todos.filter((todo) => todo._id !== action.payload),
-
         loading: false,
         error: null,
       };
-
     case "FETCH_TODO":
       return { ...state, todos: action.payload, loading: false, error: null };
-
     case "UPDATE_TODO":
       return {
         ...state,
@@ -60,27 +54,31 @@ const todoReducer = (state, action) => {
             : todo
         ),
       };
-
     case "SET_ERROR":
       return { ...state, error: action.payload, loading: false };
+    default:
+      return state;
   }
 };
 
 export const TodoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(todoReducer, initialState);
   const { isAuthenticated } = useContext(AuthContext);
-  const [editTodo, setEditTodo] = useState(null); //store todo being edited
+  const [editTodo, setEditTodo] = useState(null);
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   useEffect(() => {
     if (!isAuthenticated) return;
     const fetchTodos = async () => {
       dispatch({ type: "SET_LOADING" });
-
       try {
         const res = await axios.get(`${BASE_URL}/todo/alltodos`, {
-          withCredentials: true,
+          headers: getAuthHeaders(),
         });
-        console.log("Todo res", res.data.items);
-
         dispatch({ type: "FETCH_TODO", payload: res.data.items });
       } catch (error) {
         dispatch({ type: "SET_ERROR", payload: error.message });
@@ -92,24 +90,11 @@ export const TodoProvider = ({ children }) => {
   const addTodo = async (cred) => {
     try {
       const res = await axios.post(`${BASE_URL}/todo/add`, cred, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
+        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       });
-      if (res) {
-        // const data = await res.json();
-        console.log("Add todo response:", res?.data?.doc);
-        toast.success("todo added successfully", {
-          position: "top-right",
-        });
-        dispatch({ type: "ADD_TODO", payload: res?.data?.doc });
-      }
+      dispatch({ type: "ADD_TODO", payload: res?.data?.doc });
+      toast.success("Todo added successfully");
     } catch (error) {
-      console.error(
-        "Error adding todo:",
-        error.response?.data || error.message
-      );
       dispatch({ type: "SET_ERROR", payload: error.message });
     }
   };
@@ -117,16 +102,12 @@ export const TodoProvider = ({ children }) => {
   const delTodo = async (id) => {
     try {
       const res = await axios.delete(`${BASE_URL}/todo/${id}`, {
-        withCredentials: true,
+        headers: getAuthHeaders(),
       });
       if (res.status === 200) {
         dispatch({ type: "REMOVE_TODO", payload: id });
       }
     } catch (error) {
-      console.error(
-        "Error deleting todo",
-        error.response?.data || error.message
-      );
       dispatch({ type: "SET_ERROR", payload: error.message });
     }
   };
@@ -137,14 +118,12 @@ export const TodoProvider = ({ children }) => {
         `${BASE_URL}/todo/update/${id}`,
         updatedData,
         {
-          withCredentials: true,
+          headers: getAuthHeaders(),
         }
       );
-
       dispatch({ type: "UPDATE_TODO", payload: res.data.todo });
-      toast.success("todo updated successfully");
+      toast.success("Todo updated successfully");
       setEditTodo(null);
-      console.log("Todo resp", res.data.todo);
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error.message });
     }
@@ -152,21 +131,14 @@ export const TodoProvider = ({ children }) => {
 
   const toggleTodo = async (id, completed) => {
     try {
-      const res = await axios.put(
+      await axios.put(
         `${BASE_URL}/todo/toggle/${id}`,
-        {
-          completed: !completed,
-        },
-        { withCredentials: true }
+        { completed: !completed },
+        { headers: getAuthHeaders() }
       );
-
-      console.log("Toggle complete response", res.data);
-      // Update the todo item locally with the updated completion status
-      // updateTodo(id, { completed: !completed });
-      dispatch({ type: "TOGGLE_TODO", payload: { id, ...completed } });
+      dispatch({ type: "TOGGLE_TODO", payload: { id, completed: !completed } });
     } catch (error) {
-      console.error("Error toggling todo:", error.message);
-      toast.error("Error toggling todo", error.message);
+      toast.error("Error toggling todo");
     }
   };
 

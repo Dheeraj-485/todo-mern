@@ -1,5 +1,5 @@
 const express = require("express");
-const { isAuth } = require("../middlewares/checkAuth");
+const isAuth = require("../middlewares/checkAuth");
 const {
   createTodo,
   getAllTodos,

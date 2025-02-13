@@ -29,7 +29,7 @@ mongoose
 app.use("/user", UserRoutes);
 app.use("/todo", todoRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log("Server listening on port 8080");
+  console.log(`Server listening on port ${PORT}`);
 });

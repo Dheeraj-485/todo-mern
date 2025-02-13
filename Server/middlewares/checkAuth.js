@@ -1,30 +1,21 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-exports.isAuth = async (req, res, next) => {
+const isAuth = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1]; // Get token from header
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
+  }
+
   try {
-    const token =
-      req.cookies.token || req.body.token || req.header("Authorization");
-
-    if (!token) {
-      return res.status(404).json({ message: "Token missing" });
-    }
-    try {
-      const decode = await jwt.verify(token, "SECRET");
-      req.user = decode;
-      console.log("Decode", decode);
-    } catch (error) {
-      return res
-        .status(401)
-        .json({ message: "Token is invalid", error: error.message });
-    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Store user info in request
     next();
   } catch (error) {
-    console.error("Something went while validating token", error.message);
-    res
-      .status(400)
-      .json({
-        message: "Something went wrong while validating token",
-        error: error.message,
-      });
+    return res.status(403).json({ message: "Invalid or expired token." });
   }
 };
+module.exports = isAuth;

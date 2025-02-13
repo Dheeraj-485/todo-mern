@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")).render(
       <TodoProvider>
         <BrowserRouter>
           <Toaster />
-          <Navbar />
+          {/* <Navbar /> */}
           <App />
         </BrowserRouter>
       </TodoProvider>

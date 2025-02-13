@@ -47,7 +47,6 @@ const authReducer = (state, action) => {
     case "SET_LOADING":
       return {
         ...state,
-
         loading: true,
       };
     default:
@@ -69,8 +68,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
         const res = await axios.get(`${BASE_URL}/user/own`, {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (res?.data) {
           dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
@@ -98,9 +102,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       dispatch({ type: "SET_LOADING" });
-      const res = await axios.post(`${BASE_URL}/user/login`, credentials, {
-        withCredentials: true,
-      });
+      const res = await axios.post(`${BASE_URL}/user/login`, credentials);
 
       if (res.status === 200) {
         const token = res?.data?.token;
@@ -122,20 +124,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async (req, res) => {
+  const logout = async () => {
     try {
-      const res = await axios.get(
-        `${BASE_URL}/user/logout`,
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
 
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get(`${BASE_URL}/user/logout`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.status === 200) {
+        localStorage.removeItem("token");
         dispatch({ type: "LOGOUT" });
       }
 
-      // localStorage.removeItem("token");
       toast.success("Logout success");
     } catch (error) {
       toast.error("Error logging out");

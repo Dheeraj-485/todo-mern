@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -42,25 +43,18 @@ exports.loginUser = async (req, res) => {
     if (!compare) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = await jwt.sign({ email: user.email, id: user.id }, "SECRET", {
-      expiresIn: "24h",
-    });
+    const token = await jwt.sign(
+      { email: user.email, id: user.id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "24h",
+      }
+    );
 
     user.token = token;
     user.password = undefined;
-    const options = {
-      // expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      // httpOnly: true,
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
-      httpOnly: true, // Prevents JavaScript access
-      secure: true, // Ensures cookie is sent over HTTPS
-      sameSite: "None", // Allows cross-site cookies
-    };
 
-    res
-      .cookie("token", token, options)
-      .status(200)
-      .json({ message: "User login successfully", token, user });
+    res.status(200).json({ message: "User login successfully", token, user });
   } catch (error) {
     console.error("Error login user", error.message);
     res
@@ -71,34 +65,18 @@ exports.loginUser = async (req, res) => {
 
 exports.checkUser = async (req, res) => {
   try {
-    if (req.user) {
-      //Checks if user is authenticated
-      return res
-        .status(200)
-        .json({ message: "User is checked", user: req.user });
-    } else {
-      res.status(401);
+    const user = await User.findById(req.user.id).select("-password");
+    //Checks if user is authenticated
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    res.json(user);
   } catch (error) {
     console.error("Error checking user", error.message);
     res
       .status(500)
       .json({ message: "Error checking user", error: error.message });
-  }
-};
-
-exports.logout = async (req, res) => {
-  try {
-    res
-      .cookie("token", "", {
-        expires: new Date(0),
-        httpOnly: true,
-      })
-      .sendStatus(200);
-  } catch (error) {
-    console.error("Error logging out", error.message);
-    res
-      .status(500)
-      .json({ message: "Error logout user", error: error.message });
   }
 };
